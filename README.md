@@ -9,7 +9,15 @@ v1.0
 * this stuff is worth it, you can buy me a beer in return.
 * ----------------------------------------------------------------------------
 ```
-Credits for Robonect and the used API fully go to robonect.de
+### Robonect is the connection between your Gardena / Husqvarna Lawnmower and the world. Beside WLAN connectivity the hardware modul has more to offer:
+
+* Remote controll your mower via a webinterface
+* Config your mower
+* Open API for your own projects
+* Integration into several home automation systems (i.e.: FHEM, Gira-Homeserver, HomeMatic...)
+* Extended functions of your mower (5 timer instead of 2, configurable corridor width)
+
+***Credits for Robonect and the used API fully go to robonect.de***
 
 ### Please ensure that this script has execution rights with the following command:
 ```
