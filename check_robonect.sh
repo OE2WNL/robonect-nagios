@@ -22,10 +22,15 @@
 #        command_name    check_robonect_battery
 #        command_line    /etc/nagios3/conf.d/monitoringpackage/plugins/check_robonect.sh -H '$HOSTADDRESS$' -t battery -u 'admin' -p 'secret' -w '$ARG1$' -c '$ARG2$'
 # }
-
+#
 # define command{
 #        command_name    check_robonect_status
 #        command_line    /etc/nagios3/conf.d/monitoringpackage/plugins/check_robonect.sh -H '$HOSTADDRESS$' -t status -u 'admin' -p 'secret'
+# }
+#
+# define command{
+#        command_name    check_robonect_wlan
+#        command_line    /etc/nagios3/conf.d/monitoringpackage/plugins/check_robonect.sh -H '$HOSTADDRESS$' -t wlan -u 'admin' -p 'secret' -w '$ARG1$' -c '$ARG2$'
 # }
 #
 # And the final check command for the mower host:
@@ -49,7 +54,15 @@
 #        check_command   check_robonect_status
 # }
 #
+# define service{
+#        use             generic-service
+#        host_name       Automower
+#        service_description wlan
+#        check_command   check_robonect_wlan!-80!-90
+# }
 #
+#
+
 ########################################################################################
 
 default_roboname="Automower";
@@ -104,8 +117,8 @@ if [ "$host" == "" ];then
         exit 3;
 fi
 
-if [ "$type" != "battery" ] && [ "$type" != "status" ]; then
-        echo "Parameter -type or --type with value battery or status needed";
+if [ "$type" != "battery" ] && [ "$type" != "status" ] && [ "$type" != "wlan" ]; then
+        echo "Parameter -t or --type with value battery, status or wlan needed";
         exit 3;
 fi
 
@@ -125,7 +138,7 @@ fi
 xml=$(curl -s -S "http://$host/xml?cmd=status&user=$user&pass=$password");
 
 if [ "$xml" == "" ];then
-        echo "Probably wrong user and/or password?";
+        echo "Probably wrong user and/or password? If not already try adding parameter user -u and password -p";
         exit 3;
 fi
 
@@ -133,6 +146,8 @@ roboname=$(echo $xml | grep -oPm1 "(?<=<name>)[^<]+" | head -1)
 if [ "$roboname" == "" ];then
 	roboname=$default_roboname;
 fi
+
+# status ################################################################
 
 if [ "$type" == "status" ]; then
 	status=$(echo $xml | grep -oPm1 "(?<=<status>)[^<]+" | head -1)
@@ -179,6 +194,8 @@ if [ "$type" == "status" ]; then
 	exit 0;
 fi
 
+# battery ##############################################################
+
 if [ "$type" == "battery" ]; then
 	battery=$(echo $xml | grep -oPm1 "(?<=<battery>)[^<]+" | head -1)
 
@@ -193,5 +210,24 @@ if [ "$type" == "battery" ]; then
 	fi
 
 	echo "Battery level OK - Current percentage $battery %|bat=$battery";
+	exit 0;
+fi
+
+# wlan ################################################################
+
+if [ "$type" == "wlan" ]; then
+	wlan=$(echo $xml | grep -oPm1 "(?<=<signal>)[^<]+" | head -1)
+
+	if [ $wlan -lt $critical ];then
+		echo "Wlan signal level Critical - Current signal level $wlan dB|wlan=${wlan}dB";
+		exit 2;
+	fi
+
+	if [ $wlan -lt $warning ];then
+		echo "Wlan signal level Warning - Current signal level $wlan dB|wlan=${wlan}dB";
+		exit 1;
+	fi
+
+	echo "Wlan signal level OK - Current signal level $wlan dB|wlan=${wlan}dB";
 	exit 0;
 fi
