@@ -36,6 +36,12 @@ define command{
        command_name    check_robonect_status
        command_line    /etc/nagios3/conf.d/plugins/check_robonect.sh -H '$HOSTADDRESS$' -t status -u 'admin' -p 'secret'
 }
+
+define command{
+       command_name    check_robonect_wlan
+       command_line    /etc/nagios3/conf.d/plugins/check_robonect.sh -H '$HOSTADDRESS$' -t wlan -u 'admin' -p 'secret' -w '$ARG1$' -c '$ARG2$'
+}
+
 ```
 
 
@@ -59,5 +65,12 @@ define service{
        host_name       Automower
        service_description status
        check_command   check_robonect_status
+}
+
+define service{
+       use             generic-service
+       host_name       Automower
+       service_description wlan
+       check_command   check_robonect_wlan!-80!-90
 }
 ```
