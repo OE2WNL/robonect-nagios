@@ -151,6 +151,9 @@ fi
 
 if [ "$type" == "status" ]; then
 	status=$(echo $xml | grep -oPm1 "(?<=<status>)[^<]+" | head -1)
+	errortxt=$(echo $xml | grep -oPm1 "(?<=<error_message>)[^<]+" | head -1)
+	errordate=$(echo $xml | grep -oPm1 "(?<=<date>)[^<]+" | head -1)
+	errortime=$(echo $xml | grep -oPm1 "(?<=<time>)[^<]+" | head -1)
 
 	case "$status" in
 		0)
@@ -186,7 +189,7 @@ if [ "$type" == "status" ]; then
 	esac
 
 	if [ $status -eq 7 ] || [ $status -eq 8 ];then
-		echo "Status Critical - $statustxt|status=$status";
+		echo "Status Critical - $statustxt - $errortxt - am $errordate um $errortime|status=$status";
 		exit 2;
 	fi
 
