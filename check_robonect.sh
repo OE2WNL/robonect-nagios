@@ -20,17 +20,17 @@
 #
 # define command{
 #        command_name    check_robonect_battery
-#        command_line    /etc/nagios3/conf.d/monitoringpackage/plugins/check_robonect.sh -H '$HOSTADDRESS$' -t battery -u 'admin' -p 'secret' -w '$ARG1$' -c '$ARG2$'
+#        command_line    /etc/nagios3/conf.d/plugins/check_robonect.sh -H '$HOSTADDRESS$' -t battery -u 'admin' -p 'secret' -w '$ARG1$' -c '$ARG2$'
 # }
 #
 # define command{
 #        command_name    check_robonect_status
-#        command_line    /etc/nagios3/conf.d/monitoringpackage/plugins/check_robonect.sh -H '$HOSTADDRESS$' -t status -u 'admin' -p 'secret'
+#        command_line    /etc/nagios3/conf.d/plugins/check_robonect.sh -H '$HOSTADDRESS$' -t status -u 'admin' -p 'secret'
 # }
 #
 # define command{
 #        command_name    check_robonect_wlan
-#        command_line    /etc/nagios3/conf.d/monitoringpackage/plugins/check_robonect.sh -H '$HOSTADDRESS$' -t wlan -u 'admin' -p 'secret' -w '$ARG1$' -c '$ARG2$'
+#        command_line    /etc/nagios3/conf.d/plugins/check_robonect.sh -H '$HOSTADDRESS$' -t wlan -u 'admin' -p 'secret' -w '$ARG1$' -c '$ARG2$'
 # }
 #
 # And the final check command for the mower host:
